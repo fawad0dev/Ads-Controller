@@ -1,0 +1,65 @@
+.tab-button {
+    background-color: rgb(65, 65, 65);
+    color: rgb(200, 200, 200);
+    border-color: rgb(89, 89, 89);
+    font-size: 50px;
+    -unity-font-style: bold;
+    padding: 5px;
+    margin: 0;
+}
+
+.tab-button-active {
+    background-color: rgb(78, 78, 78);
+    color: white;
+    font-size: 50px;
+    -unity-font-style: bold;
+}
+
+.ad-section {
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 18px;
+    color: rgb(220, 220, 220);
+    -unity-font-style: bold;
+    margin-bottom: 5px;
+}
+
+.ad-box {
+    background-color: rgb(65, 65, 65);
+    border-width: 1px;
+    border-color: rgb(89, 89, 89);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.ad-description {
+    color: rgb(180, 180, 180);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.button-row {
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.ad-button {
+    min-width: auto;
+    height: auto;
+    margin: 5px;
+    background-color: rgb(44, 93, 135);
+    color: white;
+    border-radius: 3px;
+    font-size: 36px;
+    -unity-text-align: middle-center;
+}
+
+.ad-button:hover {
+    background-color: rgb(54, 115, 165);
+}
+
+.ad-button:active {
+    background-color: rgb(38, 79, 115);
+}

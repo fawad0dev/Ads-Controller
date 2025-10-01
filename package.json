@@ -1,0 +1,24 @@
+{
+    "name": "com.fawaddev.adscontroller",
+    "version": "0.1.0",
+    "displayName": "Ads Controller",
+    "keywords": [
+        "Mobile",
+        "Ads",
+        "vh-name:AdsController",
+        "vh-name:Ads Controller"
+    ],
+    "author": {
+        "name": "Fawad Dev",
+        "url": "https://github.com/fawad0dev/Ads-Controller"
+    },
+    "description": "A simple and easy to use ads controller for Unity that supports AdMob for now",
+    "unity": "6000.2.1f1",
+    "dependencies": {
+        "com.fawaddev.customattributes": "0.1.0",
+        "com.google.ads.mobile": "10.4.2"
+    },
+    "publishConfig": {
+        "registry": "https://package.openupm.com"
+    }
+}
