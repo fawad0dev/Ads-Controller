@@ -34,6 +34,7 @@ public class AdManagerUIController : MonoBehaviour {
     private Button autoAdditionalInterstitialButton;
     private Button autoShowRewardedButton;
     private Button autoAdditionalRewardedButton;
+    private Button sendAnalyticsBtn;
     private StyleColor mainBtnColor;
 
 
@@ -135,6 +136,14 @@ public class AdManagerUIController : MonoBehaviour {
         autoShowRewardedButton.clicked += () => {
             AdsController.ShowRewarded(true, true, true, true);
         };
+        /*sendAnalyticsBtn.clicked += () => {
+            AnalyticsManager.LogEvent("test_event", new IAnalyticsManager.Parameter[] {
+                new("param1", "value1"),
+                new("param2", "123"),
+                new("param3", "45.67"),
+                new("param4", "true"),
+            });
+        };*/
     }
 
     private void SwitchTab(bool showDirectCalls) {
