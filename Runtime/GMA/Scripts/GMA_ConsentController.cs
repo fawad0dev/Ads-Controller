@@ -1,11 +1,11 @@
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Ump.Api;
 #endif
 using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-public class AdMobConsentController : MonoBehaviour {
+public class GMA_ConsentController : MonoBehaviour {
     [SerializeField, Tooltip("Button to show user consent and privacy settings.")]
     private Button _privacyButton;
     [SerializeField, Tooltip("GameObject with the error popup.")]
@@ -13,7 +13,7 @@ public class AdMobConsentController : MonoBehaviour {
     [SerializeField, Tooltip("Error message for the error popup,")]
     private TMP_Text _errorText;
     [SerializeField] bool debugLogs;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
     [SerializeField] Button _adsInspectorButton;
     [SerializeField] bool tagForUnderAgeOfConsent;
     public bool CanRequestAds => ConsentInformation.CanRequestAds();
@@ -23,7 +23,7 @@ public class AdMobConsentController : MonoBehaviour {
             _errorPopup.SetActive(false);
         }
         _adsInspectorButton.gameObject.SetActive(debugLogs);
-        _adsInspectorButton.onClick.AddListener(() => transform.parent.GetComponent<AdMobAdsController>().OpenAdInspector());
+        _adsInspectorButton.onClick.AddListener(() => transform.parent.GetComponent<GMA_AdsController>().OpenAdInspector());
     }
     void Log(object message) {
         if (debugLogs) Debug.Log($"{gameObject.name} {message}");
@@ -35,7 +35,7 @@ public class AdMobConsentController : MonoBehaviour {
             TagForUnderAgeOfConsent = tagForUnderAgeOfConsent,
             ConsentDebugSettings = new ConsentDebugSettings {
                 DebugGeography = debugGeography,
-                TestDeviceHashedIds = AdMobAdsController.TestDeviceIds,
+                TestDeviceHashedIds = GMA_AdsController.TestDeviceIds,
             }
         };
         onComplete = (onComplete == null) ? UpdateErrorPopup : onComplete + UpdateErrorPopup;

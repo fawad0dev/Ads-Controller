@@ -4,26 +4,26 @@ using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Ump.Api;
 #endif
 using UnityEngine;
-public class AdMobAdsController : MonoBehaviour {
+public class GMA_AdsController : MonoBehaviour {
     [SerializeField] bool iOSAppPauseOnBackground = true;
     [SerializeField] bool raiseAdEventsOnUnityMainThread;
     [SerializeField] bool initWithoutConsent = false;
-    [SerializeField] AdMobBannerController[] bannerControllers;
-    [SerializeField] AdMobInterstitialController[] interstitialControllers;
-    [SerializeField] AdMobRewardedController[] rewardedControllers;
-    [SerializeField] AdMobNativeController[] nativeControllers;
-    [SerializeField] AdMobAppOpenController[] appOpenControllers;
-    [SerializeField] AdMobConsentController consentController;
+    [SerializeField] GMA_BannerController[] bannerControllers;
+    [SerializeField] GMA_InterstitialController[] interstitialControllers;
+    [SerializeField] GMA_RewardedController[] rewardedControllers;
+    [SerializeField] GMA_NativeController[] nativeControllers;
+    [SerializeField] GMA_AppOpenController[] appOpenControllers;
+    [SerializeField] GMA_ConsentController consentController;
 #if UNITY_EDITOR
-    [ContextMenu("Add AdMob Define")]
-    void AddADMobDefine() => AdsController.AddDefine("ADMOB_DEPENDENCIES_INSTALLED");
-    [ContextMenu("Remove AdMob Define")]
-    void RemoveADMobDefine() => AdsController.RemoveDefine("ADMOB_DEPENDENCIES_INSTALLED");
+    [ContextMenu("Add GMA Define")]
+    void AddGMADefine() => AdsController.AddDefine("GMA_DEPENDENCIES_INSTALLED");
+    [ContextMenu("Remove GMA Define")]
+    void RemoveGMADefine() => AdsController.RemoveDefine("GMA_DEPENDENCIES_INSTALLED");
     [ContextMenu("Add Google Package Registry")]
     void AddGooglePackageRegistry() => AdsController.AddScopeRegistry("Google", "https://package.openupm.com/", "com.google");
     [ContextMenu("Add Google Mobile Ads Package")]
@@ -47,13 +47,13 @@ public class AdMobAdsController : MonoBehaviour {
 #endif
         }
     }
-#if ADMOB_DEPENDENCIES_INSTALLED
-    public AdMobBannerController[] BannerControllers { get => bannerControllers; }
-    public AdMobInterstitialController[] InterstitialControllers { get => interstitialControllers; }
-    public AdMobRewardedController[] RewardedControllers { get => rewardedControllers; }
-    public AdMobNativeController[] NativeControllers { get => nativeControllers; }
-    public AdMobAppOpenController[] AppOpenControllers { get => appOpenControllers; }
-    // https://developers.google.com/admob/unity/test-ads
+#if GMA_DEPENDENCIES_INSTALLED
+    public GMA_BannerController[] BannerControllers { get => bannerControllers; }
+    public GMA_InterstitialController[] InterstitialControllers { get => interstitialControllers; }
+    public GMA_RewardedController[] RewardedControllers { get => rewardedControllers; }
+    public GMA_NativeController[] NativeControllers { get => nativeControllers; }
+    public GMA_AppOpenController[] AppOpenControllers { get => appOpenControllers; }
+    // https://developers.google.com/GMA/unity/test-ads
     public static List<string> TestDeviceIds = new()
         {
             AdRequest.TestDeviceSimulator,
@@ -66,28 +66,25 @@ public class AdMobAdsController : MonoBehaviour {
     };
     public bool debugLogs;
     void Log(string message) {
-        if (debugLogs) Debug.Log("[AdMobAdsController] " + message);
+        if (debugLogs) Debug.Log("[GMAAdsController] " + message);
     }
     public void AdsStart(Action onInitComplete) {
         Log("Device Unique Identifier: " + SystemInfo.deviceUniqueIdentifier);
 #if UNITY_IOS
         MobileAds.SetiOSAppPauseOnBackground(iOSAppPauseOnBackground);
 #endif
-#if UNITY_EDITOR
-        InitializeAdMob(onInitComplete);
-#elif UNITY_IOS || UNITY_ANDROID
-        if(initWithoutConsent) {
-            InitializeAdMob(onInitComplete);
+#if UNITY_IOS || UNITY_ANDROID
+        if (initWithoutConsent) {
+            InitializeGMA(onInitComplete);
+        } else if (consentController.CanRequestAds) {
+            InitializeGMA(onInitComplete);
         }
-        else if (consentController.CanRequestAds) {
-            InitializeAdMob(onInitComplete);
-        }
-        InitializeAdMobConsent(onInitComplete);
+        InitializeGMAConsent(onInitComplete);
 #endif
         MobileAds.RaiseAdEventsOnUnityMainThread = raiseAdEventsOnUnityMainThread;
     }
-    private void InitializeAdMobConsent(Action onInitComplete) {
-        Log("InitializeAdMobConsent()");
+    private void InitializeGMAConsent(Action onInitComplete) {
+        Log("InitializeGMAConsent()");
         consentController.GatherConsent(error => {
             if (error != null) {
                 Debug.LogError("Failed to gather consent with error: " + error);
@@ -95,11 +92,11 @@ public class AdMobAdsController : MonoBehaviour {
                 Log("Google Mobile Ads consent updated: " + ConsentInformation.ConsentStatus);
             }
             if (consentController.CanRequestAds) {
-                InitializeAdMob(onInitComplete);
+                InitializeGMA(onInitComplete);
             }
         });
     }
-    private void InitializeAdMob(Action onInitComplete) {
+    private void InitializeGMA(Action onInitComplete) {
         MobileAds.Initialize(status => {
             MobileAds.SetRequestConfiguration(new RequestConfiguration { TestDeviceIds = TestDeviceIds });
 
@@ -122,7 +119,7 @@ public class AdMobAdsController : MonoBehaviour {
     }
     public void InitControllers() {
         InitBannerAd();
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
         if (AppOpenControllers != null) {
             foreach (var c in AppOpenControllers) {
                 if (c != null) c.Init();
@@ -192,7 +189,7 @@ public class AdMobAdsController : MonoBehaviour {
         DestroyBannerAd();
         DestroyInterstitialAds();
         DestroyRewardedAds();
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
         if (AppOpenControllers != null) {
             foreach (var c in AppOpenControllers) {
                 if (c != null) c.Destroy();

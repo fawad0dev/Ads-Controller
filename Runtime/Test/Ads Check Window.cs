@@ -94,11 +94,13 @@ public class AdManagerUIController : MonoBehaviour {
             },
              onLoadFailed: (err) => {
                  loadInterstitialButton.style.backgroundColor = new StyleColor(Color.red);
+                 Debug.LogError("Interstitial load failed: " + err);
              });
         };
         showInterstitialButton.clicked += () => {
             AdsController.ShowInterstitial(onFailed: (err) => {
                 showInterstitialButton.style.backgroundColor = new StyleColor(Color.red);
+                Debug.LogError("Interstitial show failed: " + err);
             },
              onClose: () => {
                  showInterstitialButton.style.backgroundColor = mainBtnColor;
@@ -111,11 +113,13 @@ public class AdManagerUIController : MonoBehaviour {
             },
              onLoadFailed: (err) => {
                  loadRewardedButton.style.backgroundColor = new StyleColor(Color.red);
+                 Debug.LogError("Rewarded load failed: " + err);
              });
         };
         showRewardedButton.clicked += () => {
             AdsController.ShowRewarded(onShowFailed: (err) => {
                 showRewardedButton.style.backgroundColor = new StyleColor(Color.red);
+                Debug.LogError("Rewarded show failed: " + err);
             },
              onClosed: () => {
                  showRewardedButton.style.backgroundColor = mainBtnColor;

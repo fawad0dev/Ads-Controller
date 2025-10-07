@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: debugLogs
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1122219059846696158, guid: a6f1cb9ba3c0e7749a92d2262e3bb164, type: 3}
+      propertyPath: cacheExpirationTime
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3109389996102153714, guid: a6f1cb9ba3c0e7749a92d2262e3bb164, type: 3}
       propertyPath: rCValues.Array.size
       value: 1
@@ -338,12 +342,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 699729053742201449, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 699729053742201449, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
       propertyPath: initWithoutConsent
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1830301925313909480, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
       propertyPath: domainUrl
-      value: https://one.one.one.one
+      value: https://one.one.one.one/
+      objectReference: {fileID: 0}
+    - target: {fileID: 2367200897325065363, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2367200897325065363, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: tagForUnderAgeOfConsent
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2541360466729880778, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
       propertyPath: m_LocalPosition.x
@@ -385,9 +401,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3977883787310609243, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4464332032695906376, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533917256808412326, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6025010993270736894, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
       propertyPath: m_Name
       value: Ads Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8256755027615731578, guid: ed934278a7df8634a8ff8b02b48312de, type: 3}
+      propertyPath: debugLogs
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

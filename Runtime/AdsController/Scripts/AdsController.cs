@@ -94,8 +94,8 @@ public class AdsController : MonoBehaviour {
         public System.Collections.Generic.Dictionary<string, string> dependencies;
     }
 #endif
-#if ADMOB_DEPENDENCIES_INSTALLED
-    [SerializeField] AdMobAdsController adMobAdsController;
+#if GMA_DEPENDENCIES_INSTALLED
+    [SerializeField] GMA_AdsController adMobAdsController;
 #endif
     [SerializeField] private DomainConnectivityManager adMobDomain;
     [SerializeField] bool preLoadBannerAd;
@@ -140,7 +140,7 @@ public class AdsController : MonoBehaviour {
     object[] BannerAds {
         get {
             object[] ads = null;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
             ads = adMobAdsController.BannerControllers;
 #endif
             return ads;
@@ -149,7 +149,7 @@ public class AdsController : MonoBehaviour {
     object[] InterstitialAds {
         get {
             object[] ads = null;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
             ads = adMobAdsController.InterstitialControllers;
 #endif
             return ads;
@@ -158,7 +158,7 @@ public class AdsController : MonoBehaviour {
     object[] RewardedAds {
         get {
             object[] ads = null;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
             ads = adMobAdsController.RewardedControllers;
 #endif
             return ads;
@@ -167,7 +167,7 @@ public class AdsController : MonoBehaviour {
     object[] NativeAds {
         get {
             object[] ads = null;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
             ads = adMobAdsController.NativeControllers;
 #endif
             return ads;
@@ -176,7 +176,7 @@ public class AdsController : MonoBehaviour {
     object[] AppOpenAds {
         get {
             object[] ads = null;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
             ads = adMobAdsController.AppOpenControllers;
 #endif
             return ads;
@@ -198,33 +198,32 @@ public class AdsController : MonoBehaviour {
         }
     }
     private void InitializeAds() {
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
         if (adMobAdsController != null) {
             adMobAdsController.AdsStart(() => {
                 InitAdMobAds();
             });
         } else {
             var error = AdErrors.ADMOB_NOT_ASSIGNED;
-            if (debugLogs)
-                Debug.LogError(error);
+            Log(error);
             OnAdError?.Invoke(error);
         }
 #endif
     }
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
     private void InitAdMobAds() {
         try {
             adMobAdsController.SetApplicationMuted(false);
             adMobAdsController.SetApplicationVolume(1);
             adMobAdsController.InitControllers();
             isAdMobInitialized = true;
+            Log("AdMob ads initialized successfully.");
             adMobDomain.onDomainConnectivityLost.AddListener(DestroyAdMobAds);
             adMobDomain.onDomainConnected.RemoveListener(InitAdMobAds);
             PreloadAds();
         } catch (Exception ex) {
             isAdMobInitialized = false;
-            if (debugLogs)
-                Debug.LogError($"Error initializing AdMob ads: {ex.Message}");
+            Log($"Error initializing AdMob ads: {ex.Message}");
             OnAdError?.Invoke($"AdMob init error: {ex.Message}");
         }
     }
@@ -240,7 +239,7 @@ public class AdsController : MonoBehaviour {
     }
     private IEnumerator PreloadAdsSequentially() {
         if (preLoadBannerAd) {
-            LoadBanner();
+            LoadBanner_();
             yield return new WaitForSeconds(0.5f);
         }
         if (preLoadInterstitialAd) {
@@ -252,7 +251,7 @@ public class AdsController : MonoBehaviour {
             yield return new WaitForSeconds(0.5f);
         }
         if (preLoadNativeAd) {
-            LoadNative();
+            LoadNative_();
             yield return new WaitForSeconds(0.5f);
         }
         if (preLoadAppOpenAd) {
@@ -277,16 +276,15 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (BannerAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobBannerController bannerController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_BannerController bannerController:
                 bannerController.Load(
                     () => {
                         onLoaded?.Invoke();
                     },
                     (error) => {
                         string errorMsg = $"AdMob banner load failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onLoadFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     }
@@ -304,8 +302,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (BannerAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobBannerController bannerController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_BannerController bannerController:
                 bannerController.Show(
                     null, null,
                     () => {
@@ -330,8 +328,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (BannerAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobBannerController bannerController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_BannerController bannerController:
                 bannerController.Hide();
                 break;
 #endif
@@ -365,16 +363,15 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (NativeAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 nativeController.Load(
                     (ad) => {
                         onLoaded?.Invoke();
                     },
                     (ad, error) => {
                         string errorMsg = $"AdMob native load failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onLoadFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     }
@@ -391,8 +388,8 @@ public class AdsController : MonoBehaviour {
             return false;
         }
         switch (NativeAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 return nativeController.IsAdReady();
 #endif
             default:
@@ -405,8 +402,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (NativeAds[nativeIndex]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 if (nativeController.IsAdReady()) {
                     nativeController.Show();
                     displayedEventAction?.Invoke();
@@ -425,8 +422,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (NativeAds[nativeIndex]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 nativeController.Hide();
                 closedEventAction?.Invoke();
                 break;
@@ -440,8 +437,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (NativeAds[nativeIndex]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 nativeController.Destroy();
                 break;
 #endif
@@ -454,8 +451,8 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (NativeAds[nativeIndex]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobNativeController nativeController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_NativeController nativeController:
                 nativeController.Render();
                 break;
 #endif
@@ -480,19 +477,19 @@ public class AdsController : MonoBehaviour {
     void LoadInterstitial_(int index = 0, Action onLoaded = null, Action<string> onLoadFailed = null) {
         if (!ValidateController(index, InterstitialAds, nameof(InterstitialAds))) {
             onLoadFailed?.Invoke(AdErrors.INVALID_INTERSTITIAL);
+            Log(AdErrors.INVALID_INTERSTITIAL);
             return;
         }
         switch (InterstitialAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobInterstitialController interstitialController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_InterstitialController interstitialController:
                 interstitialController.Load(
                     () => {
                         onLoaded?.Invoke();
                     },
                     (error) => {
                         string errorMsg = $"AdMob interstitial load failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onLoadFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     }
@@ -509,8 +506,8 @@ public class AdsController : MonoBehaviour {
             return false;
         }
         switch (InterstitialAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobInterstitialController interstitialController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_InterstitialController interstitialController:
                 return interstitialController.IsAdReady;
 #endif
             default:
@@ -523,14 +520,13 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (InterstitialAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobInterstitialController interstitialController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_InterstitialController interstitialController:
                 interstitialController.Show(
                     (error) => {
                         onFailed?.Invoke(error.GetMessage());
                         string errorMsg = $"AdMob interstitial show failed: {error}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     },
                     () => {
@@ -674,16 +670,15 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (RewardedAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobRewardedController rewardedController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_RewardedController rewardedController:
                 rewardedController.Load(
                     () => {
                         onLoaded?.Invoke();
                     },
                     (error) => {
                         string errorMsg = $"AdMob rewarded load failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onLoadFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     }
@@ -700,8 +695,8 @@ public class AdsController : MonoBehaviour {
             return false;
         }
         switch (RewardedAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobRewardedController rewardedController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_RewardedController rewardedController:
                 return rewardedController.IsAdReady;
 #endif
             default:
@@ -714,16 +709,15 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (RewardedAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobRewardedController rewardedController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_RewardedController rewardedController:
                 rewardedController.Show(
                     (reward) => {
                         onReward?.Invoke(new Reward(reward.Type, reward.Amount));
                     },
                     (error) => {
                         string errorMsg = $"AdMob rewarded show failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onShowFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     },
@@ -857,16 +851,15 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (AppOpenAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobAppOpenController appOpenController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_AppOpenController appOpenController:
                 appOpenController.Load(
                     () => {
                         onLoaded?.Invoke();
                     },
                     (error) => {
                         string errorMsg = $"AdMob app open load failed: {error.GetMessage()}";
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         onLoadFailed?.Invoke(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     }
@@ -883,8 +876,8 @@ public class AdsController : MonoBehaviour {
             return false;
         }
         switch (AppOpenAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobAppOpenController appOpenController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_AppOpenController appOpenController:
                 return appOpenController.IsAdReady;
 #endif
             default:
@@ -897,14 +890,13 @@ public class AdsController : MonoBehaviour {
             return;
         }
         switch (AppOpenAds[index]) {
-#if ADMOB_DEPENDENCIES_INSTALLED
-            case AdMobAppOpenController appOpenController:
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_AppOpenController appOpenController:
                 appOpenController.Show(
                     (error) => {
                         string errorMsg = $"AdMob app open show failed: {error.GetMessage()}";
                         onFailed?.Invoke(errorMsg);
-                        if (debugLogs)
-                            Debug.LogWarning(errorMsg);
+                        Log(errorMsg);
                         OnAdError?.Invoke(errorMsg);
                     },
                     () => { onOpen?.Invoke(); },
@@ -922,34 +914,31 @@ public class AdsController : MonoBehaviour {
     }
     #endregion
     private void ValidateAllControllers() {
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
         adMobAdsController.ValidateControllers();
 #endif
     }
     private bool ValidateController(int index, object[] controllers, string adType) {
         if (controllers == null || controllers.Length == 0) {
-            if (debugLogs)
-                Debug.LogWarning($"No {adType} controllers found");
+            Log($"No {adType} controllers found");
             return false;
         }
         if (index < 0 || index >= controllers.Length) {
-            if (debugLogs)
-                Debug.LogWarning($"Invalid {adType} index: {index}");
+            Log($"Invalid {adType} index: {index}");
             return false;
         }
-#if ADMOB_DEPENDENCIES_INSTALLED
+        bool isInit = false;
         switch (controllers[index]) {
-            case AdMobRewardedController:
-                return isAdMobInitialized;
-            case AdMobBannerController:
-                return isAdMobInitialized;
-            case AdMobInterstitialController:
-                return isAdMobInitialized;
-            case AdMobAppOpenController:
-                return isAdMobInitialized;
-        }
+#if GMA_DEPENDENCIES_INSTALLED
+            case GMA_RewardedController or GMA_InterstitialController or GMA_NativeController or GMA_BannerController or GMA_AppOpenController:
+                isInit = isAdMobInitialized;
+                break;
 #endif
-        return true;
+            default:
+                Log($"Invalid {adType} controller at index: {index} it is of type {controllers[index].GetType().Name}");
+                break;
+        }
+        return isInit;
     }
     public static void SetWaitingScreen(bool show, string waitingText = "") {
         Instance.SetWaitingScreen_(show, waitingText);

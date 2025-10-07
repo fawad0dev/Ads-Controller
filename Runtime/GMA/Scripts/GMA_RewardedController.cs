@@ -1,12 +1,12 @@
 using System;
 using CustomAttributes;
 
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 
-public class AdMobRewardedController : MonoBehaviour {
+public class GMA_RewardedController : MonoBehaviour {
     [Header("Ad Unit IDs")]
     [SerializeField] bool useTestIds = false;
     [SerializeField, HideIf(nameof(useTestIds))] string androidRewardedAdId = "ca-app-pub-3940256099942544/5224354917";
@@ -14,7 +14,7 @@ public class AdMobRewardedController : MonoBehaviour {
     [Header("Rewarded Ad Settings")]
     [SerializeField] bool debugLogs;
     [SerializeField] float loadCooldown = 5f;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
     public Action<Reward> userRewardEarnedCallback;
     public Action<AdValue> onAdPaidAction;
     public Action onImpressionRecordedAction;
@@ -24,8 +24,8 @@ public class AdMobRewardedController : MonoBehaviour {
     public Action onAdClickedAction;
     public Action onAdLoadedAction;
     public Action<LoadAdError> onAdFailedToLoadAction;
-    bool IsAndroid => AdMobAdsController.IsAndroid;
-    bool IsIos => AdMobAdsController.IsIos;
+    bool IsAndroid => GMA_AdsController.IsAndroid;
+    bool IsIos => GMA_AdsController.IsIos;
     public string RewardedAdId {
         get {
             if (IsAndroid)

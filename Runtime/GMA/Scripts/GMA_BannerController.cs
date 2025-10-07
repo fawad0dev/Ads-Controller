@@ -1,11 +1,11 @@
 using System;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 using CustomAttributes;
 
-public class AdMobBannerController : MonoBehaviour {
+public class GMA_BannerController : MonoBehaviour {
     [Header("Ad Unit IDs")]
     [SerializeField] bool useTestIds = false;
     [SerializeField, HideIf(nameof(useTestIds))] string androidBannerID = "ca-app-pub-3940256099942544/6300978111";
@@ -22,9 +22,9 @@ public class AdMobBannerController : MonoBehaviour {
     }
     [SerializeField, ShowIf(nameof(adSize), BannerAdSize.Custom)]
     Rect customBannerSize = new(0, 0, 320, 50);
-#if ADMOB_DEPENDENCIES_INSTALLED
-    bool IsAndroid => AdMobAdsController.IsAndroid;
-    bool IsIos => AdMobAdsController.IsIos;
+#if GMA_DEPENDENCIES_INSTALLED
+    bool IsAndroid => GMA_AdsController.IsAndroid;
+    bool IsIos => GMA_AdsController.IsIos;
     string BannerID {
         get {
             if (IsAndroid)

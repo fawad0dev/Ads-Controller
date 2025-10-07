@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 using CustomAttributes;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
-public class AdMobAppOpenController : MonoBehaviour {
+public class GMA_AppOpenController : MonoBehaviour {
     [Header("Ad Unit Ids")]
     [SerializeField] private bool useTestIds = false;
     [SerializeField, HideIf(nameof(useTestIds))] private string androidAdUnitId = "ca-app-pub-3940256099942544/9257395921";
@@ -22,15 +22,15 @@ public class AdMobAppOpenController : MonoBehaviour {
     }
     string AppOpenID {
         get {
-            if (AdMobAdsController.IsAndroid)
+            if (GMA_AdsController.IsAndroid)
                 return useTestIds ? "ca-app-pub-3940256099942544/9257395921" : androidAdUnitId;
-            else if (AdMobAdsController.IsIos)
+            else if (GMA_AdsController.IsIos)
                 return useTestIds ? "ca-app-pub-3940256099942544/5575463023" : iOSAdUnitId;
             else
                 return null;
         }
     }
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
     private AppOpenAd _ad;
     public bool IsAdReady => _ad != null;
     private readonly TimeSpan TIMEOUT = TimeSpan.FromHours(4);

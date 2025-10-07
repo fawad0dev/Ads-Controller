@@ -1,11 +1,11 @@
 using System;
 using CustomAttributes;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 
-public class AdMobInterstitialController : MonoBehaviour {
+public class GMA_InterstitialController : MonoBehaviour {
     [Header("Ad Unit IDs")]
     [SerializeField] bool useTestIds = false;
     [SerializeField, HideIf(nameof(useTestIds))] string androidInterstitialID = "ca-app-pub-3940256099942544/1033173712";
@@ -13,7 +13,7 @@ public class AdMobInterstitialController : MonoBehaviour {
     [Header("Interstitial Settings")]
     [SerializeField] bool debugLogs = true;
     [SerializeField] float loadCooldown = 5f; // Time in seconds to wait after a failed load
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
     private InterstitialAd _interstitialAd;
     private bool isAdLoading = false;
     private float lastLoadAttemptTime = 0f;
@@ -27,9 +27,9 @@ public class AdMobInterstitialController : MonoBehaviour {
     public Action<AdError> onLoadedFailed;
     string InterstitialId {
         get {
-            if (AdMobAdsController.IsAndroid)
+            if (GMA_AdsController.IsAndroid)
                 return useTestIds ? "ca-app-pub-3940256099942544/1033173712" : androidInterstitialID;
-            else if (AdMobAdsController.IsIos)
+            else if (GMA_AdsController.IsIos)
                 return useTestIds ? "ca-app-pub-3940256099942544/4411468910" : iosInterstitialID;
             else
                 return null;

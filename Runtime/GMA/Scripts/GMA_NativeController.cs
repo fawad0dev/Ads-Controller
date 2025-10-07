@@ -1,12 +1,12 @@
 using System;
 using CustomAttributes;
-#if ADMOB_DEPENDENCIES_INSTALLED
+#if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
 
-public class AdMobNativeController : MonoBehaviour {
+public class GMA_NativeController : MonoBehaviour {
     [Header("Ad Unit Ids")]
     [SerializeField] bool useTestIds = false;
     [SerializeField, HideIf(nameof(useTestIds))] string androidNativeID = "ca-app-pub-3940256099942544/2247696110";
@@ -19,9 +19,9 @@ public class AdMobNativeController : MonoBehaviour {
         RuntimePlatform.IPhonePlayer
     };
     [SerializeField] Color mainBackgroundColor = Color.white;
-#if ADMOB_DEPENDENCIES_INSTALLED
-    bool IsAndroid => AdMobAdsController.IsAndroid;
-    bool IsIos => AdMobAdsController.IsIos;
+#if GMA_DEPENDENCIES_INSTALLED
+    bool IsAndroid => GMA_AdsController.IsAndroid;
+    bool IsIos => GMA_AdsController.IsIos;
     string NativeID {
         get {
             if (IsAndroid)
