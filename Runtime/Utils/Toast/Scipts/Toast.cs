@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-namespace AdsControllerNS.Utils {
+namespace CustomAds.Utils {
     public class Toast : MonoBehaviour {
         [SerializeField] TMP_Text textComponent;
         [SerializeField] GameObject toastObject;

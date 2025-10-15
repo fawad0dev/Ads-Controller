@@ -5,7 +5,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-namespace AdsControllerNS.GMA {
+namespace CustomAds.GMA {
     public class GMA_ConsentController : MonoBehaviour {
         [SerializeField, Tooltip("Button to show user consent and privacy settings.")]
         private Button _privacyButton;

@@ -9,7 +9,7 @@ using GoogleMobileAds.Api;
 using GoogleMobileAds.Ump.Api;
 #endif
 using UnityEngine;
-namespace AdsControllerNS.GMA {
+namespace CustomAds.GMA {
     public class GMA_AdsController : MonoBehaviour {
         [SerializeField] bool iOSAppPauseOnBackground = true;
         [SerializeField] bool raiseAdEventsOnUnityMainThread;

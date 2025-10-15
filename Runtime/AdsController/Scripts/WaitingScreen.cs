@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-namespace AdsControllerNS {
+namespace CustomAds {
     public class WaitingScreen : MonoBehaviour {
         [SerializeField] private GameObject waitingScreen;
         [SerializeField] TMP_Text waitingText;

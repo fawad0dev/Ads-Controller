@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using AdsControllerNS.GMA;
-using AdsControllerNS.Utils;
+using CustomAds.GMA;
+using CustomAds.Utils;
 
 
 #if UNITY_EDITOR
@@ -10,7 +10,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 #endif
-namespace AdsControllerNS {
+namespace CustomAds {
     public class AdsController : MonoBehaviour {
 #if UNITY_EDITOR
         public static void AddDefine(string define) {

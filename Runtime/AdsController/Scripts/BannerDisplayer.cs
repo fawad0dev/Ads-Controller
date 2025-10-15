@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-namespace AdsControllerNS {
+namespace CustomAds {
     public class BannerDisplayer : MonoBehaviour {
         [SerializeField] int index;
         [SerializeField] EnableState enableState;

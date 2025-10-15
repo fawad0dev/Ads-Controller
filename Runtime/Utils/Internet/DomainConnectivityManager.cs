@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
-namespace AdsControllerNS.Utils {
+namespace CustomAds.Utils {
     public class DomainConnectivityManager : MonoBehaviour {
         [SerializeField] private float checkInterval = 5f;
         [SerializeField] private float connectionTimeout = 3f;

@@ -1,4 +1,4 @@
-using AdsControllerNS;
+using CustomAds;
 using UnityEngine;
 using UnityEngine.UIElements;
 

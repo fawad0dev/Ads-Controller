@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-namespace AdsControllerNS {
+namespace CustomAds {
     public class InterstitialAdDisplayer : MonoBehaviour {
         [SerializeField] int index;
         [SerializeField] bool autoLoadIfNotReady;

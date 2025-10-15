@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-namespace AdsControllerNS {
+namespace CustomAds {
     public class AppOpenDisplayer : MonoBehaviour {
         [SerializeField] int index;
         [SerializeField] UnityEvent<string> onFailed;

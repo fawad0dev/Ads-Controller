@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace AdsControllerNS.Utils {
+namespace CustomAds.Utils {
     public class ToastsManager : MonoBehaviour {
         static ToastsManager instance;
 

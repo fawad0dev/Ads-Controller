@@ -4,7 +4,7 @@ using CustomAttributes;
 #if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
-namespace AdsControllerNS.GMA {
+namespace CustomAds.GMA {
     public class GMA_AppOpenController : MonoBehaviour {
         [Header("Ad Unit Ids")]
         [SerializeField] private bool useTestIds = false;

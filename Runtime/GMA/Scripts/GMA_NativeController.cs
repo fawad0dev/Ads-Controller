@@ -5,7 +5,7 @@ using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
-namespace AdsControllerNS.GMA {
+namespace CustomAds.GMA {
     public class GMA_NativeController : MonoBehaviour {
         [Header("Ad Unit Ids")]
         [SerializeField] bool useTestIds = false;
