@@ -1,2 +1,2 @@
 # Ads-Controller
-Some nessary plugins for Unity
+it implements ads for Google Mobile ads for unity
