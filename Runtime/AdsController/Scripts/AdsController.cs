@@ -136,8 +136,9 @@ namespace CustomAds {
         private void Awake() {
             if (instance == null) {
                 instance = this;
-            } else {
+            } else if (instance != this) {
                 Destroy(gameObject);
+                return;
             }
         }
         public event Action OnAllAdsInitialized;
