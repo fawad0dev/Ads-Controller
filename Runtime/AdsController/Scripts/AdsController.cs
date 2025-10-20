@@ -109,8 +109,24 @@ namespace CustomAds {
         [SerializeField] bool preLoadNativeAd;
         [SerializeField] WaitingScreen waitingScreen;
         [SerializeField] private bool debugLogs;
-        void Log(string message) {
-            if (debugLogs) Debug.Log("[AdsController] " + message);
+        void Log(string message, int level = 0) {
+            if (debugLogs) {
+                var log = "[AdsController] " + message;
+                switch (level) {
+                    case 0:
+                        Debug.Log(log);
+                        break;
+                    case 1:
+                        Debug.LogWarning(log);
+                        break;
+                    case 2:
+                        Debug.LogError(log);
+                        break;
+                    default:
+                        Debug.Log(log);
+                        break;
+                }
+            }
         }
         static AdsController instance;
         private bool isAdMobInitialized;
@@ -211,7 +227,7 @@ namespace CustomAds {
                 });
             } else {
                 var error = AdErrors.ADMOB_NOT_ASSIGNED;
-                Log(error);
+                Log(error, 2);
                 OnAdError?.Invoke(error);
             }
 #endif
@@ -229,7 +245,7 @@ namespace CustomAds {
                 PreloadAds();
             } catch (Exception ex) {
                 isAdMobInitialized = false;
-                Log($"Error initializing AdMob ads: {ex.Message}");
+                Log($"Error initializing AdMob ads: {ex.Message}", 2);
                 OnAdError?.Invoke($"AdMob init error: {ex.Message}");
             }
         }
@@ -290,7 +306,7 @@ namespace CustomAds {
                         },
                         (error) => {
                             string errorMsg = $"AdMob banner load failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onLoadFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         }
@@ -377,7 +393,7 @@ namespace CustomAds {
                         },
                         (ad, error) => {
                             string errorMsg = $"AdMob native load failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onLoadFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         }
@@ -483,7 +499,7 @@ namespace CustomAds {
         void LoadInterstitial_(int index = 0, Action onLoaded = null, Action<string> onLoadFailed = null) {
             if (!ValidateController(index, InterstitialAds, nameof(InterstitialAds))) {
                 onLoadFailed?.Invoke(AdErrors.INVALID_INTERSTITIAL);
-                Log(AdErrors.INVALID_INTERSTITIAL);
+                Log(AdErrors.INVALID_INTERSTITIAL, 2);
                 return;
             }
             switch (InterstitialAds[index]) {
@@ -495,7 +511,7 @@ namespace CustomAds {
                         },
                         (error) => {
                             string errorMsg = $"AdMob interstitial load failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onLoadFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         }
@@ -532,7 +548,7 @@ namespace CustomAds {
                         (error) => {
                             onFailed?.Invoke(error.GetMessage());
                             string errorMsg = $"AdMob interstitial show failed: {error}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             OnAdError?.Invoke(errorMsg);
                         },
                         () => {
@@ -684,7 +700,7 @@ namespace CustomAds {
                         },
                         (error) => {
                             string errorMsg = $"AdMob rewarded load failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onLoadFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         }
@@ -723,7 +739,7 @@ namespace CustomAds {
                         },
                         (error) => {
                             string errorMsg = $"AdMob rewarded show failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onShowFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         },
@@ -865,7 +881,7 @@ namespace CustomAds {
                         },
                         (error) => {
                             string errorMsg = $"AdMob app open load failed: {error.GetMessage()}";
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             onLoadFailed?.Invoke(errorMsg);
                             OnAdError?.Invoke(errorMsg);
                         }
@@ -902,7 +918,7 @@ namespace CustomAds {
                         (error) => {
                             string errorMsg = $"AdMob app open show failed: {error.GetMessage()}";
                             onFailed?.Invoke(errorMsg);
-                            Log(errorMsg);
+                            Log(errorMsg, 2);
                             OnAdError?.Invoke(errorMsg);
                         },
                         () => { onOpen?.Invoke(); },
@@ -926,11 +942,11 @@ namespace CustomAds {
         }
         private bool ValidateController(int index, object[] controllers, string adType) {
             if (controllers == null || controllers.Length == 0) {
-                Log($"No {adType} controllers found");
+                Log($"No {adType} controllers found", 2);
                 return false;
             }
             if (index < 0 || index >= controllers.Length) {
-                Log($"Invalid {adType} index: {index}");
+                Log($"Invalid {adType} index: {index}", 2);
                 return false;
             }
             bool isInit = false;
@@ -941,7 +957,7 @@ namespace CustomAds {
                     break;
 #endif
                 default:
-                    Log($"Invalid {adType} controller at index: {index} it is of type {controllers[index].GetType().Name}");
+                    Log($"Invalid {adType} controller at index: {index} it is of type {controllers[index].GetType().Name}", 2);
                     break;
             }
             return isInit;
