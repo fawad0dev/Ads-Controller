@@ -1644,7 +1644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iOSAppPauseOnBackground: 1
   raiseAdEventsOnUnityMainThread: 1
-  initWithoutConsent: 0
+  initWithoutConsent: 1
   bannerControllers:
   - {fileID: 5533917256808412326}
   interstitialControllers:
@@ -1667,8 +1667,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169494f15fc43874c8c94e3f948ee56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  adMobAdsController: {fileID: 699729053742201449}
-  adMobDomain: {fileID: 1830301925313909480}
+  _GMAController: {fileID: 699729053742201449}
+  _GMADomain: {fileID: 1830301925313909480}
   preLoadBannerAd: 1
   preLoadInterstitialAd: 1
   preLoadRewardedAd: 1
