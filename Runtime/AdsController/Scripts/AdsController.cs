@@ -100,9 +100,9 @@ namespace CustomAds {
         }
 #endif
 #if GMA_DEPENDENCIES_INSTALLED
-        [SerializeField] GMA_AdsController adMobAdsController;
+        [SerializeField] GMA_AdsController _GMAController;
 #endif
-        [SerializeField] private DomainConnectivityManager adMobDomain;
+        [SerializeField] private DomainConnectivityManager _GMADomain;
         [SerializeField] bool preLoadBannerAd;
         [SerializeField] bool preLoadInterstitialAd;
         [SerializeField] bool preLoadRewardedAd;
@@ -129,7 +129,7 @@ namespace CustomAds {
             }
         }
         static AdsController instance;
-        private bool isAdMobInitialized;
+        private bool isGMAInitialized;
         public static class AdErrors {
             public const string INVALID_BANNER = "Invalid Banner Ad Controller";
             public const string INVALID_INTERSTITIAL = "Invalid Interstitial Ad Controller";
@@ -163,7 +163,7 @@ namespace CustomAds {
             get {
                 object[] ads = null;
 #if GMA_DEPENDENCIES_INSTALLED
-                ads = adMobAdsController.BannerControllers;
+                ads = _GMAController.BannerControllers;
 #endif
                 return ads;
             }
@@ -172,7 +172,7 @@ namespace CustomAds {
             get {
                 object[] ads = null;
 #if GMA_DEPENDENCIES_INSTALLED
-                ads = adMobAdsController.InterstitialControllers;
+                ads = _GMAController.InterstitialControllers;
 #endif
                 return ads;
             }
@@ -181,7 +181,7 @@ namespace CustomAds {
             get {
                 object[] ads = null;
 #if GMA_DEPENDENCIES_INSTALLED
-                ads = adMobAdsController.RewardedControllers;
+                ads = _GMAController.RewardedControllers;
 #endif
                 return ads;
             }
@@ -190,7 +190,7 @@ namespace CustomAds {
             get {
                 object[] ads = null;
 #if GMA_DEPENDENCIES_INSTALLED
-                ads = adMobAdsController.NativeControllers;
+                ads = _GMAController.NativeControllers;
 #endif
                 return ads;
             }
@@ -199,7 +199,7 @@ namespace CustomAds {
             get {
                 object[] ads = null;
 #if GMA_DEPENDENCIES_INSTALLED
-                ads = adMobAdsController.AppOpenControllers;
+                ads = _GMAController.AppOpenControllers;
 #endif
                 return ads;
             }
@@ -209,21 +209,21 @@ namespace CustomAds {
 
         IEnumerator Start() {
             bool initializationAttempted = false;
-            while (!adMobDomain.IsOnline) {
+            while (!_GMADomain.IsOnline) {
                 if (!initializationAttempted)
                     Log("Waiting for internet connection to initialize ads...");
                 initializationAttempted = true;
                 yield return new WaitForSeconds(1f);
             }
-            if (!isAdMobInitialized) {
+            if (!isGMAInitialized) {
                 InitializeAds();
             }
         }
         private void InitializeAds() {
 #if GMA_DEPENDENCIES_INSTALLED
-            if (adMobAdsController != null) {
-                adMobAdsController.AdsStart(() => {
-                    InitAdMobAds();
+            if (_GMAController != null) {
+                _GMAController.AdsStart(() => {
+                    InitGMA();
                 });
             } else {
                 var error = AdErrors.ADMOB_NOT_ASSIGNED;
@@ -233,27 +233,27 @@ namespace CustomAds {
 #endif
         }
 #if GMA_DEPENDENCIES_INSTALLED
-        private void InitAdMobAds() {
+        private void InitGMA() {
             try {
-                adMobAdsController.SetApplicationMuted(false);
-                adMobAdsController.SetApplicationVolume(1);
-                adMobAdsController.InitControllers();
-                isAdMobInitialized = true;
+                _GMAController.SetApplicationMuted(false);
+                _GMAController.SetApplicationVolume(1);
+                _GMAController.InitControllers();
+                isGMAInitialized = true;
                 Log("AdMob ads initialized successfully.");
-                adMobDomain.onDomainConnectivityLost.AddListener(DestroyAdMobAds);
-                adMobDomain.onDomainConnected.RemoveListener(InitAdMobAds);
+                _GMADomain.onDomainConnectivityLost.AddListener(DestroyAdMobAds);
+                _GMADomain.onDomainConnected.RemoveListener(InitGMA);
                 PreloadAds();
             } catch (Exception ex) {
-                isAdMobInitialized = false;
+                isGMAInitialized = false;
                 Log($"Error initializing AdMob ads: {ex.Message}", 2);
                 OnAdError?.Invoke($"AdMob init error: {ex.Message}");
             }
         }
         private void DestroyAdMobAds() {
-            isAdMobInitialized = false;
-            adMobAdsController.DestroyControllers();
-            adMobDomain.onDomainConnectivityLost.RemoveListener(DestroyAdMobAds);
-            adMobDomain.onDomainConnected.AddListener(InitAdMobAds);
+            isGMAInitialized = false;
+            _GMAController.DestroyControllers();
+            _GMADomain.onDomainConnectivityLost.RemoveListener(DestroyAdMobAds);
+            _GMADomain.onDomainConnected.AddListener(InitGMA);
         }
 #endif
         private void PreloadAds() {
@@ -937,7 +937,7 @@ namespace CustomAds {
         #endregion
         private void ValidateAllControllers() {
 #if GMA_DEPENDENCIES_INSTALLED
-            adMobAdsController.ValidateControllers();
+            _GMAController.ValidateControllers();
 #endif
         }
         private bool ValidateController(int index, object[] controllers, string adType) {
@@ -953,7 +953,9 @@ namespace CustomAds {
             switch (controllers[index]) {
 #if GMA_DEPENDENCIES_INSTALLED
                 case GMA_RewardedController or GMA_InterstitialController or GMA_NativeController or GMA_BannerController or GMA_AppOpenController:
-                    isInit = isAdMobInitialized;
+                    isInit = isGMAInitialized;
+                    if (!isInit)
+                        Log($"GMA is not initialized. Cannot use {adType} controller at index: {index}", 2);
                     break;
 #endif
                 default:
