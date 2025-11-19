@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -204,4 +201,17 @@ namespace CustomAds.GMA {
         }
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_AdsController))]
+    public class GMA_AdsControllerEditor : Editor {
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+            DrawDefaultInspector();
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }
