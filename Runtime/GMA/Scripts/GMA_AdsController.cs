@@ -1,7 +1,11 @@
 #if UNITY_EDITOR
 using UnityEditor;
+
+
 #endif
 #if GMA_DEPENDENCIES_INSTALLED
+using System;
+using System.Collections.Generic;
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -208,10 +212,18 @@ namespace CustomAds.GMA {
             serializedObject.Update();
 #if !GMA_DEPENDENCIES_INSTALLED
             EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+            if (GUILayout.Button("Add GMA Define")) {
+                AdsController.AddDefine("GMA_DEPENDENCIES_INSTALLED");
+            }
+#else
+            if (GUILayout.Button("Remove GMA Define")) {
+                AdsController.RemoveDefine("GMA_DEPENDENCIES_INSTALLED");
+            }
 #endif
             DrawDefaultInspector();
             serializedObject.ApplyModifiedProperties();
         }
+
     }
 #endif
 }

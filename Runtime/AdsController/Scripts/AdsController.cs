@@ -35,28 +35,32 @@ namespace CustomAds {
         }
 #endif
         }
+
         public static void RemoveDefine(string define) {
 #if UNITY_6000_0_OR_NEWER
             var buildTarget = NamedBuildTarget.FromBuildTargetGroup(
                 EditorUserBuildSettings.selectedBuildTargetGroup
             );
             var defines = PlayerSettings.GetScriptingDefineSymbols(buildTarget);
-            if (defines.Contains(define)) {
-                PlayerSettings.SetScriptingDefineSymbols(
-                    buildTarget,
-                    defines.Replace(";" + define, "").Replace(define + ";", "").Replace(define, "")
-                );
-                PlayerSettings.SetScriptingDefineSymbols(buildTarget, defines);
+            if (!string.IsNullOrEmpty(defines) && defines.Contains(define)) {
+                var updated = defines.Replace(";" + define, "").Replace(define + ";", "").Replace(define, "");
+                // Normalize accidental double semicolons and trim edges
+                while (updated.Contains(";;")) updated = updated.Replace(";;", ";");
+                updated = updated.Trim(';', ' ');
+                PlayerSettings.SetScriptingDefineSymbols(buildTarget, updated);
             }
 #else
         var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(
             EditorUserBuildSettings.selectedBuildTargetGroup
         );
-        if (defines.Contains(define))
+        if (!string.IsNullOrEmpty(defines) && defines.Contains(define))
         {
+            var updated = defines.Replace(";" + define, "").Replace(define + ";", "").Replace(define, "");
+            while (updated.Contains(";;")) updated = updated.Replace(";;", ";");
+            updated = updated.Trim(';', ' ');
             PlayerSettings.SetScriptingDefineSymbolsForGroup(
                 EditorUserBuildSettings.selectedBuildTargetGroup,
-                defines.Replace(";" + define, "").Replace(define + ";", "").Replace(define, "")
+                updated
             );
         }
 #endif
