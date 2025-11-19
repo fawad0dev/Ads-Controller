@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
-using CustomAttributes;
 #if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CustomAds.GMA {
     public class GMA_AppOpenController : MonoBehaviour {
-        [Header("Ad Unit Ids")]
         [SerializeField] private bool useTestIds = false;
-        [SerializeField, HideIf(nameof(useTestIds))] private string androidAdUnitId = "ca-app-pub-3940256099942544/9257395921";
-        [SerializeField, HideIf(nameof(useTestIds))] private string iOSAdUnitId = "ca-app-pub-3940256099942544/5575463023";
-        [Header("Settings")]
+        [SerializeField] private string androidAdUnitId = "ca-app-pub-3940256099942544/9257395921";
+        [SerializeField] private string iOSAdUnitId = "ca-app-pub-3940256099942544/5575463023";
         [SerializeField] private bool debugLogs = false;
         void Log(object message) {
             if (debugLogs) Debug.Log($"{gameObject.name} {message}");
@@ -144,4 +144,37 @@ namespace CustomAds.GMA {
         }
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_AppOpenController))]
+    public class GMA_AppOpenControllerEditor : Editor {
+        private SerializedProperty useTestIds;
+        private SerializedProperty androidAdUnitId;
+        private SerializedProperty iOSAdUnitId;
+        private SerializedProperty debugLogs;
+
+        private void OnEnable() {
+            useTestIds = serializedObject.FindProperty("useTestIds");
+            androidAdUnitId = serializedObject.FindProperty("androidAdUnitId");
+            iOSAdUnitId = serializedObject.FindProperty("iOSAdUnitId");
+            debugLogs = serializedObject.FindProperty("debugLogs");
+        }
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+            EditorGUILayout.LabelField("Ad Unit Ids", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(useTestIds);
+            if (!useTestIds.boolValue) {
+                EditorGUILayout.PropertyField(androidAdUnitId);
+                EditorGUILayout.PropertyField(iOSAdUnitId);
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(debugLogs);
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+
+#endif
 }

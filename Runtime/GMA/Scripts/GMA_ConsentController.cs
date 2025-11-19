@@ -5,6 +5,9 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CustomAds.GMA {
     public class GMA_ConsentController : MonoBehaviour {
         [SerializeField, Tooltip("Button to show user consent and privacy settings.")]
@@ -99,4 +102,17 @@ namespace CustomAds.GMA {
         }
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_ConsentController))]
+    public class GMA_ConsentControllerEditor : Editor {
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+            DrawDefaultInspector();
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }

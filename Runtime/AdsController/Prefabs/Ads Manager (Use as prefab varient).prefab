@@ -1654,7 +1654,6 @@ MonoBehaviour:
   nativeControllers: []
   appOpenControllers: []
   consentController: {fileID: 2367200897325065363}
-  debugLogs: 0
 --- !u!114 &3977883787310609243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1667,7 +1666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169494f15fc43874c8c94e3f948ee56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _GMAController: {fileID: 699729053742201449}
   _GMADomain: {fileID: 1830301925313909480}
   preLoadBannerAd: 1
   preLoadInterstitialAd: 1
@@ -2006,14 +2004,13 @@ MonoBehaviour:
   iosBannerID: 
   debugLogs: 0
   adSize: 0
+  collapsable: 0
   customBannerSize:
     serializedVersion: 2
     x: 0
     y: 0
     width: 320
     height: 50
-  adPosition: 1
-  collapsable: 0
 --- !u!1 &6991263783138822235
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,9 +2505,6 @@ MonoBehaviour:
   _errorPopup: {fileID: 6271585456886255897}
   _errorText: {fileID: 1283108772972055792}
   debugLogs: 0
-  _adsInspectorButton: {fileID: 8380175433707419300}
-  tagForUnderAgeOfConsent: 0
-  debugGeography: 0
 --- !u!1001 &3020457941654875349
 PrefabInstance:
   m_ObjectHideFlags: 0

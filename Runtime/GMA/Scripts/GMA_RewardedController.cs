@@ -1,17 +1,17 @@
 using System;
-using CustomAttributes;
 
 #if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CustomAds.GMA {
     public class GMA_RewardedController : MonoBehaviour {
-        [Header("Ad Unit IDs")]
         [SerializeField] bool useTestIds = false;
-        [SerializeField, HideIf(nameof(useTestIds))] string androidRewardedAdId = "ca-app-pub-3940256099942544/5224354917";
-        [SerializeField, HideIf(nameof(useTestIds))] string iosRewardedAdId = "ca-app-pub-3940256099942544/1712485313";
-        [Header("Rewarded Ad Settings")]
+        [SerializeField] string androidRewardedAdId = "ca-app-pub-3940256099942544/5224354917";
+        [SerializeField] string iosRewardedAdId = "ca-app-pub-3940256099942544/1712485313";
         [SerializeField] bool debugLogs;
         [SerializeField] float loadCooldown = 5f;
 #if GMA_DEPENDENCIES_INSTALLED
@@ -184,4 +184,45 @@ namespace CustomAds.GMA {
         }
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_RewardedController))]
+    public class GMA_RewardedControllerEditor : Editor {
+        private SerializedProperty useTestIds;
+        private SerializedProperty androidRewardedAdId;
+        private SerializedProperty iosRewardedAdId;
+        private SerializedProperty debugLogs;
+        private SerializedProperty loadCooldown;
+
+        private void OnEnable() {
+            useTestIds = serializedObject.FindProperty("useTestIds");
+            androidRewardedAdId = serializedObject.FindProperty("androidRewardedAdId");
+            iosRewardedAdId = serializedObject.FindProperty("iosRewardedAdId");
+            debugLogs = serializedObject.FindProperty("debugLogs");
+            loadCooldown = serializedObject.FindProperty("loadCooldown");
+        }
+
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+
+            EditorGUILayout.LabelField("Ad Unit IDs", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(useTestIds);
+
+            if (!useTestIds.boolValue) {
+                EditorGUILayout.PropertyField(androidRewardedAdId);
+                EditorGUILayout.PropertyField(iosRewardedAdId);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Rewarded Ad Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(debugLogs);
+            EditorGUILayout.PropertyField(loadCooldown);
+
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }

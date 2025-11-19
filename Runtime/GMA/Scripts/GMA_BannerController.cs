@@ -3,16 +3,17 @@ using System;
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
-using CustomAttributes;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CustomAds.GMA {
     public class GMA_BannerController : MonoBehaviour {
-        [Header("Ad Unit IDs")]
         [SerializeField] bool useTestIds = false;
-        [SerializeField, HideIf(nameof(useTestIds))] string androidBannerID = "ca-app-pub-3940256099942544/6300978111";
-        [SerializeField, HideIf(nameof(useTestIds))] string iosBannerID = "ca-app-pub-3940256099942544/2934735716";
-        [Header("Banner Settings")]
+        [SerializeField] string androidBannerID = "ca-app-pub-3940256099942544/6300978111";
+        [SerializeField] string iosBannerID = "ca-app-pub-3940256099942544/2934735716";
         [SerializeField] bool debugLogs;
         [SerializeField] BannerAdSize adSize = BannerAdSize.Banner;
+        [SerializeField] bool collapsable = false;
         enum BannerAdSize {
             Banner,
             IABBanner,
@@ -20,8 +21,7 @@ namespace CustomAds.GMA {
             Leaderboard,
             Custom
         }
-        [SerializeField, ShowIf(nameof(adSize), BannerAdSize.Custom)]
-        Rect customBannerSize = new(0, 0, 320, 50);
+        [SerializeField] Rect customBannerSize = new(0, 0, 320, 50);
 #if GMA_DEPENDENCIES_INSTALLED
         bool IsAndroid => GMA_AdsController.IsAndroid;
         bool IsIos => GMA_AdsController.IsIos;
@@ -37,7 +37,6 @@ namespace CustomAds.GMA {
         }
 
         [SerializeField] AdPosition adPosition = AdPosition.Bottom;
-        [SerializeField] bool collapsable = false;
         public Action onBannerAdLoadedAction;
         public Action<LoadAdError> onBannerAdLoadFailedAction;
         public Action<AdValue> onAdPaidAction;
@@ -186,4 +185,57 @@ namespace CustomAds.GMA {
 
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_BannerController))]
+    public class GMA_BannerControllerEditor : Editor {
+        private SerializedProperty useTestIds;
+        private SerializedProperty androidBannerID;
+        private SerializedProperty iosBannerID;
+        private SerializedProperty debugLogs;
+        private SerializedProperty adSize;
+        private SerializedProperty customBannerSize;
+        private SerializedProperty adPosition;
+        private SerializedProperty collapsable;
+
+        private void OnEnable() {
+            useTestIds = serializedObject.FindProperty("useTestIds");
+            androidBannerID = serializedObject.FindProperty("androidBannerID");
+            iosBannerID = serializedObject.FindProperty("iosBannerID");
+            debugLogs = serializedObject.FindProperty("debugLogs");
+            adSize = serializedObject.FindProperty("adSize");
+            customBannerSize = serializedObject.FindProperty("customBannerSize");
+            adPosition = serializedObject.FindProperty("adPosition");
+            collapsable = serializedObject.FindProperty("collapsable");
+        }
+
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+
+            EditorGUILayout.LabelField("Ad Unit IDs", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(useTestIds);
+
+            if (!useTestIds.boolValue) {
+                EditorGUILayout.PropertyField(androidBannerID);
+                EditorGUILayout.PropertyField(iosBannerID);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Banner Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(debugLogs);
+            EditorGUILayout.PropertyField(adSize);
+
+            if (adSize.enumValueIndex == 4) {
+                EditorGUILayout.PropertyField(customBannerSize);
+            }
+#if GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.PropertyField(adPosition);
+#endif
+            EditorGUILayout.PropertyField(collapsable);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }

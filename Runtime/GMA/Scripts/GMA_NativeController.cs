@@ -1,17 +1,17 @@
 using System;
-using CustomAttributes;
 #if GMA_DEPENDENCIES_INSTALLED
 using GoogleMobileAds.Api;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CustomAds.GMA {
     public class GMA_NativeController : MonoBehaviour {
-        [Header("Ad Unit Ids")]
         [SerializeField] bool useTestIds = false;
-        [SerializeField, HideIf(nameof(useTestIds))] string androidNativeID = "ca-app-pub-3940256099942544/2247696110";
-        [SerializeField, HideIf(nameof(useTestIds))] string iosNativeID = "ca-app-pub-3940256099942544/3986624511";
-        [Header("Native Settings")]
+        [SerializeField] string androidNativeID = "ca-app-pub-3940256099942544/2247696110";
+        [SerializeField] string iosNativeID = "ca-app-pub-3940256099942544/3986624511";
         [SerializeField] bool debugLogs;
         [SerializeField]
         RuntimePlatform[] platformFilter = new RuntimePlatform[]
@@ -45,8 +45,7 @@ namespace CustomAds.GMA {
             Medium
         }
         [SerializeField] NaiveAdSize nativeAdSize = NaiveAdSize.Banner;
-        [SerializeField, ShowIf(nameof(nativeAdSize), NaiveAdSize.Custom)]
-        Vector2Int customBannerSize = new(320, 50);
+        [SerializeField] Vector2Int customBannerSize = new(320, 50);
         enum NaiveAdSize {
             Banner,
             IABBanner,
@@ -55,10 +54,8 @@ namespace CustomAds.GMA {
             Custom
         }
         [SerializeField] bool useCustomPosition = false;
-        [SerializeField, HideIf(nameof(useCustomPosition))]
-        AdPosition adPosition = AdPosition.Bottom;
-        [SerializeField, ShowIf(nameof(useCustomPosition))]
-        RectTransform position;
+        [SerializeField] AdPosition adPosition = AdPosition.Bottom;
+        [SerializeField] RectTransform position;
         public UnityEvent<NativeOverlayAd> onNativeAdLoaded;
         public UnityEvent<NativeOverlayAd, LoadAdError> onNativeAdLoadFailed;
         public UnityEvent<NativeOverlayAd, AdValue> onAdPaid;
@@ -241,4 +238,101 @@ namespace CustomAds.GMA {
         }
 #endif
     }
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GMA_NativeController))]
+    public class GMA_NativeControllerEditor : Editor {
+        private SerializedProperty useTestIds;
+        private SerializedProperty androidNativeID;
+        private SerializedProperty iosNativeID;
+        private SerializedProperty debugLogs;
+        private SerializedProperty platformFilter;
+        private SerializedProperty mainBackgroundColor;
+        private SerializedProperty Option;
+        private SerializedProperty nativeTemplateId;
+        private SerializedProperty nativeAdSize;
+        private SerializedProperty customBannerSize;
+        private SerializedProperty useCustomPosition;
+        private SerializedProperty adPosition;
+        private SerializedProperty position;
+        private SerializedProperty onNativeAdLoaded;
+        private SerializedProperty onNativeAdLoadFailed;
+        private SerializedProperty onAdPaid;
+        private SerializedProperty onAdImpressionRecorded;
+        private SerializedProperty onAdClicked;
+        private SerializedProperty onAdFullScreenContentOpened;
+        private SerializedProperty onAdFullScreenContentClosed;
+
+        private void OnEnable() {
+            useTestIds = serializedObject.FindProperty("useTestIds");
+            androidNativeID = serializedObject.FindProperty("androidNativeID");
+            iosNativeID = serializedObject.FindProperty("iosNativeID");
+            debugLogs = serializedObject.FindProperty("debugLogs");
+            platformFilter = serializedObject.FindProperty("platformFilter");
+            mainBackgroundColor = serializedObject.FindProperty("mainBackgroundColor");
+            Option = serializedObject.FindProperty("Option");
+            nativeTemplateId = serializedObject.FindProperty("nativeTemplateId");
+            nativeAdSize = serializedObject.FindProperty("nativeAdSize");
+            customBannerSize = serializedObject.FindProperty("customBannerSize");
+            useCustomPosition = serializedObject.FindProperty("useCustomPosition");
+            adPosition = serializedObject.FindProperty("adPosition");
+            position = serializedObject.FindProperty("position");
+            onNativeAdLoaded = serializedObject.FindProperty("onNativeAdLoaded");
+            onNativeAdLoadFailed = serializedObject.FindProperty("onNativeAdLoadFailed");
+            onAdPaid = serializedObject.FindProperty("onAdPaid");
+            onAdImpressionRecorded = serializedObject.FindProperty("onAdImpressionRecorded");
+            onAdClicked = serializedObject.FindProperty("onAdClicked");
+            onAdFullScreenContentOpened = serializedObject.FindProperty("onAdFullScreenContentOpened");
+            onAdFullScreenContentClosed = serializedObject.FindProperty("onAdFullScreenContentClosed");
+        }
+
+        public override void OnInspectorGUI() {
+            serializedObject.Update();
+
+#if !GMA_DEPENDENCIES_INSTALLED
+            EditorGUILayout.HelpBox("GMA_DEPENDENCIES_INSTALLED is not added in Scripting Define Symbols. The GMA will not work to add them goto GMA_AdsController open the Context menu and click on 'Add GMA Dependencies'", MessageType.Warning);
+#endif
+
+            EditorGUILayout.LabelField("Ad Unit Ids", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(useTestIds);
+
+            if (!useTestIds.boolValue) {
+                EditorGUILayout.PropertyField(androidNativeID);
+                EditorGUILayout.PropertyField(iosNativeID);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Native Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(debugLogs);
+            EditorGUILayout.PropertyField(platformFilter);
+            EditorGUILayout.PropertyField(mainBackgroundColor);
+            EditorGUILayout.PropertyField(Option);
+            EditorGUILayout.PropertyField(nativeTemplateId);
+            EditorGUILayout.PropertyField(nativeAdSize);
+
+            if (nativeAdSize.enumValueIndex == 4) { // Custom
+                EditorGUILayout.PropertyField(customBannerSize);
+            }
+
+            EditorGUILayout.PropertyField(useCustomPosition);
+
+            if (useCustomPosition.boolValue) {
+                EditorGUILayout.PropertyField(position);
+            } else {
+                EditorGUILayout.PropertyField(adPosition);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Events", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(onNativeAdLoaded);
+            EditorGUILayout.PropertyField(onNativeAdLoadFailed);
+            EditorGUILayout.PropertyField(onAdPaid);
+            EditorGUILayout.PropertyField(onAdImpressionRecorded);
+            EditorGUILayout.PropertyField(onAdClicked);
+            EditorGUILayout.PropertyField(onAdFullScreenContentOpened);
+            EditorGUILayout.PropertyField(onAdFullScreenContentClosed);
+
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }
